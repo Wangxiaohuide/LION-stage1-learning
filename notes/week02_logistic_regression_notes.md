@@ -228,14 +228,3 @@ sigmoid 可以把它压缩到 0 到 1 之间；
 后续学习神经网络时，逻辑回归中的 sigmoid、代价函数、梯度下降和分类边界等概念仍然会继续出现，因此这个实验是后续深度学习分类任务的重要基础。
 
 
----
-
-你现在就按这个顺序做：
-
-```text
-1. 在 notes 里新建 README.md
-2. 复制第 1 段内容
-3. 新建 week01_linear_regression_notes.md
-4. 复制第 2 段内容
-5. 新建 week02_logistic_regression_notes.md
-6. 复制第 3 段内容
