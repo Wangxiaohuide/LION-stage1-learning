@@ -1,15 +1,20 @@
-# Task05: ICA 鸡尾酒会问题
+# Task05: CS229 ICA 鸡尾酒会问题
 
-## 实验来源
+## 实验背景
 
-- 课程：Stanford CS229
-- 作业：Problem Set 4 - Independent Component Analysis
-- 对应文件：`p04_ica.py`
-- 任务主题：Cocktail Party Problem，即从多路混合音频中分离出原始声源
+本实验对应 Stanford CS229 Problem Set 4 中的 Independent Component Analysis（ICA）编程题。它和本周学习的第 15 讲内容直接相关：
+
+- Lecture 13：K-means、Mixture of Gaussians、EM
+- Lecture 14：Factor Analysis
+- Lecture 15：PCA、ICA
+- Lecture 16：MDP、Bellman Equations
+- Lecture 17：Value Iteration、Policy Iteration、LQR、LQG
+
+本实验重点实践 Lecture 15 中的 ICA，用来解决经典的 Cocktail Party Problem：从多路混合音频中分离出原始独立声源。
 
 ## 实验目标
 
-本实验使用独立成分分析（Independent Component Analysis, ICA）处理 5 路混合音频。数据文件 `data/mix.dat` 中每一列是一条混合后的音轨，算法需要学习一个 unmixing matrix `W`，使得：
+数据文件 `data/mix.dat` 包含 5 路混合音频。每一列是一条混合后的音轨，每一行对应一个时间点。实验目标是学习一个解混矩阵 `W`，使混合信号 `X` 经过线性变换后得到分离声源 `S`：
 
 ```text
 S = X W^T
@@ -18,16 +23,16 @@ S = X W^T
 其中：
 
 - `X` 是观测到的混合信号；
-- `W` 是需要学习的解混矩阵；
+- `W` 是 ICA 学习得到的 unmixing matrix；
 - `S` 是分离后的独立声源估计。
 
 ## 核心实现
 
-这次主要补全了两个函数。
+本次主要补全 `src/p04_ica.py` 中的两个函数。
 
 ### `update_W(W, x, learning_rate)`
 
-对单个样本 `x` 做一次随机梯度上升更新。CS229 该题假设原始声源服从 Laplace 分布，因此梯度包含两部分：
+对单个样本 `x` 做一次随机梯度上升更新。CS229 该题假设原始声源服从 Laplace 分布，因此更新梯度包含：
 
 ```text
 inv(W.T) - sign(Wx) x^T
@@ -36,17 +41,26 @@ inv(W.T) - sign(Wx) x^T
 代码实现为：
 
 ```python
-source_estimate = W.dot(x)
-gradient = np.linalg.inv(W.T) - np.outer(np.sign(source_estimate), x)
-updated_W = W + learning_rate * gradient
+def update_W(W, x, learning_rate):
+    source_estimate = W.dot(x)
+    gradient = np.linalg.inv(W.T) - np.outer(np.sign(source_estimate), x)
+    return W + learning_rate * gradient
 ```
+
+我的理解：
+
+- `W.dot(x)` 是当前估计出的独立声源；
+- `np.sign(W.dot(x))` 来自 Laplace 分布的对数密度梯度；
+- `np.linalg.inv(W.T)` 来自 log determinant 项；
+- `np.outer(...)` 将单个样本上的梯度写成矩阵形式。
 
 ### `unmix(X, W)`
 
-用训练得到的 `W` 对所有混合信号做线性变换：
+用学习到的 `W` 对所有混合信号做解混：
 
 ```python
-S = X.dot(W.T)
+def unmix(X, W):
+    return X.dot(W.T)
 ```
 
 ## 运行方式
@@ -63,10 +77,20 @@ python src/p04_ica.py
 - `split_0.wav` 至 `split_4.wav`：ICA 分离后的音频；
 - `W.txt`：学习到的解混矩阵。
 
+## 本地运行记录
+
+本地运行时，数据形状为：
+
+```text
+Mixed signal shape: (53442, 5)
+```
+
+这表示一共有 53442 个时间点、5 路混合信号。经过退火学习率训练后，程序能够输出 5 条分离音频。
+
 ## 学习收获
 
-通过这个实验，我对无监督学习有了更具体的认识。ICA 没有使用人工标签，而是利用“不同声源之间统计独立”这一假设，从混合观测中恢复潜在结构。相比监督学习中用 `(x, y)` 训练模型，ICA 更像是在问：数据背后是否存在一些看不见但可以被分离出来的独立因素？
+这个实验帮助我把 ICA 的公式和代码联系起来。相比 K-means、GMM、PCA 等无监督学习方法，ICA 更强调“独立性”假设，而不是只关注距离、概率成分或方差方向。
 
-这也让我理解了鸡尾酒会问题的本质：如果多个麦克风同时接收到不同说话人和背景声音的线性混合，那么只要混合方式满足一定条件，就可以通过学习一个反向线性变换，把混合信号重新拆开。
+鸡尾酒会问题也让我更直观地理解了无监督学习的价值：即使没有人工标签，只要我们对数据生成过程有合理假设，比如不同声源之间相互独立，就可以从混合观测中恢复隐藏结构。
 
-本实验中最关键的代码不是很多，但公式和代码的对应关系很重要。`np.linalg.inv(W.T)` 来自 log determinant 项，`np.sign(W.dot(x))` 来自 Laplace 分布的对数密度梯度，`np.outer(...)` 则把单个样本上的梯度写成矩阵形式。
+本实验目前还需要继续加强的地方是 ICA 更新公式的完整推导，尤其是 log determinant 项和 Laplace 分布假设如何共同得到最终梯度。

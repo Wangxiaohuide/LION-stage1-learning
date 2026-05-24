@@ -17,7 +17,7 @@
 |---|---|---|
 | Week 01 | week1_report.md | 完成线性回归和逻辑回归两个基础实验以及机器学习课程前五讲 |
 | Week 02 | week2_report.md | 学习支持向量机、模型选择、误差分析、决策树、集成学习和神经网络实验 |
-| Week 03 | week3_report.md | 学习 CS229 无监督学习和强化学习，完成 ICA 鸡尾酒会编程实验 |
+| Week 03 | week3_report.md | 学习 CS229 第 13-17 讲：K-means、GMM/EM、Factor Analysis、PCA/ICA、MDP、Bellman 方程、Value/Policy Iteration，并完成 ICA 鸡尾酒会编程实验 |
 
 ## 周报用途
 
