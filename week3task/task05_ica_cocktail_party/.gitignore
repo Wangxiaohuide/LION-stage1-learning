@@ -1,0 +1,4 @@
+src/output/*.wav
+src/output/*.txt
+
+!src/output/.gitkeep
