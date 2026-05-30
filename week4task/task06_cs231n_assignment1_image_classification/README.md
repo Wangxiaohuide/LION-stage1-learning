@@ -30,29 +30,17 @@ official_assignment1_starter/
 - `features.ipynb`: HOG/color histogram 等高层图像特征
 - `FullyConnectedNets.ipynb`: fully connected network
 
-## 本地可运行实验
+## Assignment 1 内容
 
-为了避免只停留在 notebook 占位代码，本目录额外整理了两个轻量实验。
+本目录保留官方 Assignment 1 starter，作为后续逐题完成 notebook 的基础材料。当前第四周完成的是课程内容整理和作业结构归档，不包含额外自写脚本。
 
-### 1. CS231n Assignment 1 mini demo
+后续需要在官方 notebook 和 `cs231n/` 代码框架中继续补全：
 
-```bash
-python src/cs231n_week4_demo.py
-```
-
-这个脚本用 NumPy 构造一个 8x8 小图像分类数据集，并实现：
-
-- 向量化 L2 距离的 kNN；
-- 向量化 Softmax loss 与梯度下降；
-- `affine - ReLU - affine - softmax` 两层神经网络。
-
-### 2. CS229 late lectures mini demo
-
-```bash
-python src/q_learning_gridworld.py
-```
-
-这个脚本实现一个 4x4 Gridworld 上的 Q-learning，用来对应 CS229 后半段的强化学习主题。
+- kNN 的距离计算、标签投票和交叉验证；
+- Softmax loss 的 naive/vectorized 实现；
+- two-layer neural network 的 forward/backward；
+- 图像特征实验；
+- fully connected network 的训练与调参。
 
 ## 本周收获
 

@@ -72,13 +72,7 @@ week4task/task06_cs231n_assignment1_image_classification/official_assignment1_st
 - 使用 HOG、color histogram 等高层图像特征；
 - 训练 fully connected network。
 
-为了便于本地复现，我额外写了一个轻量脚本：
-
-```text
-week4task/task06_cs231n_assignment1_image_classification/src/cs231n_week4_demo.py
-```
-
-它用 NumPy 生成 8x8 小图像数据，并完整跑通 kNN、Softmax 和两层神经网络。这个 demo 的价值是把 Assignment 1 的主线压缩到一个可运行文件里，先建立整体理解，再回到官方 notebook 中补细节。
+当前仓库保留官方 starter code 和 notebook，用于后续逐题补全 Assignment 1。第四周不包含额外自写脚本，避免和官方作业材料混在一起。
 
 ## 四、CS229 第 18 讲之后内容
 
@@ -102,43 +96,7 @@ POMDP 则处理状态不能被完全观测的情况。智能体看到的是 obse
 
 最后一讲更像课程总结，把监督学习、无监督学习、强化学习和应用专题串起来。对我来说，CS229 后半段的主线是：从已知模型的 Bellman equation，到未知模型下的 Q-learning，再到直接优化策略的 policy gradient。
 
-本周对应的轻量实验为：
-
-```text
-week4task/task06_cs231n_assignment1_image_classification/src/q_learning_gridworld.py
-```
-
-它在一个 4x4 Gridworld 中训练 Q-learning，并输出学到的 greedy policy。
-
-## 五、本周运行结果
-
-运行 CS231n mini demo：
-
-```bash
-python src/cs231n_week4_demo.py
-```
-
-预期输出包括：
-
-- train/val/test 数据划分；
-- 不同 `k` 的 kNN 验证集准确率；
-- Softmax 训练 loss 和验证集准确率；
-- 两层神经网络训练 loss 和验证集准确率；
-- Softmax 与 two-layer net 的测试集准确率。
-
-运行 CS229 Q-learning demo：
-
-```bash
-python src/q_learning_gridworld.py
-```
-
-预期输出包括：
-
-- 学到的 greedy policy；
-- 从起点到终点的路径；
-- 累计 reward。
-
-## 六、本周收获
+## 五、本周收获
 
 本周最大的收获是把“图像分类”和“序列决策”两条线放在一起理解。
 
@@ -146,10 +104,10 @@ CS231n 前五讲让我看到，从原始像素到分类结果，中间需要经�
 
 CS229 第 18 讲之后让我继续理解强化学习：当没有固定标签、只有环境反馈时，模型要学的不再是一次预测，而是长期回报最大的行动策略。Q-learning 和 Policy Search 分别代表了基于价值函数和直接优化策略的两种路线。
 
-## 七、后续需要加强
+## 六、后续需要加强
 
 1. 回到 CS231n 官方 notebook，逐个补全 Assignment 1 的 TODO；
 2. 对 Softmax 梯度和两层网络反向传播再做一次手推；
-3. 用 CIFAR-10 或更小的真实图像子集替换当前 synthetic demo；
+3. 使用 CIFAR-10 数据完成官方 kNN、Softmax、two-layer net、features 和 fully connected network notebook；
 4. 对比 tabular Q-learning、value function approximation 和 policy gradient 的适用场景；
 5. 继续保持每周 README、报告、代码和运行记录同步更新到 GitHub。
