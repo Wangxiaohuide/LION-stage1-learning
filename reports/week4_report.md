@@ -20,11 +20,11 @@ week4task/task06_cs231n_assignment1_image_classification/official_assignment1_st
 
 1. 参考 `cs231n/cs231n.github.io` 官方课程与作业材料，整理 CS231n 前五讲的知识结构；
 2. 下载并归档 CS231n Assignment 1 starter，梳理 notebook 和 `cs231n/` 代码框架中的 TODO；
-3. 对 Assignment 1 的 kNN、Softmax、two-layer net、features、FullyConnectedNets 五个实验模块建立任务理解，并补全核心 Python 代码；
+3. 对 Assignment 1 的 kNN、Softmax、linear classifier 三个基础代码作业进行实现，并阅读 two-layer net、features、FullyConnectedNets 的后续实验结构；
 4. 补充学习 CS229 第 18 讲之后的 Q-learning、value function approximation、policy search、REINFORCE、POMDPs 和课程总结；
 5. 对比 CS231n 图像分类任务和 CS229 强化学习任务的差别：前者偏“给定数据集上的监督分类”，后者偏“和环境交互下的长期决策”。
 
-需要说明的是：本周 Assignment 1 分两步推进。前半段先完成官方 starter 的归档、阅读、结构拆解和初步运行检查；随后进一步补全 `cs231n/` 目录下的核心 Python 实现，包括 kNN、Softmax、两层网络、多层全连接网络、常用层和优化器。Notebook 中的 CIFAR-10 完整训练、超参数调参曲线和 inline question 仍需后续继续完善。
+需要说明的是：本周 Assignment 1 分两步推进。前半段先完成官方 starter 的归档、阅读、结构拆解和初步运行检查；随后重点完成三个基础代码作业：`k_nearest_neighbor.py`、`softmax.py`、`linear_classifier.py`。Notebook 中的 CIFAR-10 完整运行、模型准确率对比、训练曲线和 inline question 计划放到下周继续完善。
 
 ## 二、CS231n 前五讲学习内容
 
@@ -192,7 +192,7 @@ input -> affine -> ReLU -> affine -> Softmax
 
 `FullyConnectedNets.ipynb` 则把两层网络推广到任意层数的全连接网络，并引入更完整的训练框架。它和 `fc_net.py`、`layers.py`、`solver.py`、`optim.py` 联系紧密，后续需要补全 affine、ReLU、Softmax、优化器等模块。
 
-这部分本周已经从“结构阅读”推进到“底层代码实现”。也就是说，notebook 里的长时间训练和结果记录还没有全部完成，但 `cs231n/` 下支撑 notebook 运行的核心函数已经补上，后续可以继续按 notebook 顺序跑 CIFAR-10 实验和调参。
+这部分本周已经从“结构阅读”推进到“基础代码实现”。也就是说，notebook 里的 CIFAR-10 完整训练和结果记录还没有全部完成，但 kNN、Softmax 和 linear classifier 三个基础模块已经先补上，后续可以继续按 notebook 顺序跑 CIFAR-10 实验和调参。
 
 ### 6. 当前实验状态
 
@@ -200,17 +200,16 @@ input -> affine -> ReLU -> affine -> Softmax
 
 - 已完成：官方 starter code 和 notebook 的归档；
 - 已完成：Assignment 1 的实验结构、核心文件和 TODO 范围梳理；
-- 已完成：kNN、Softmax、two-layer net、features、FullyConnectedNets 的任务目标理解；
+- 已完成：kNN、Softmax、linear classifier 的任务目标理解和代码实现；
+- 已阅读：two-layer net、features、FullyConnectedNets 的后续实验结构；
 - 已完成：`k_nearest_neighbor.py` 中三种距离计算和标签投票；
 - 已完成：`softmax.py` 中 naive / vectorized Softmax loss 与 gradient；
 - 已完成：`linear_classifier.py` 中 minibatch 采样、SGD 更新、预测函数和 SVM vectorized loss；
-- 已完成：`layers.py` 中 affine、ReLU、batchnorm、layernorm、dropout、卷积、池化、spatial normalization、SVM loss、Softmax loss；
-- 已完成：`fc_net.py` 中 TwoLayerNet 与 FullyConnectedNet 的初始化、forward、loss、backward；
-- 已完成：`optim.py` 中 SGD momentum、RMSProp、Adam；
 - 已完成：用小规模验证脚本检查核心实现可运行；
-- 未完成：notebook 级别的 CIFAR-10 完整训练、调参结果记录、可视化图和 inline question。
+- 下周计划：在 CIFAR-10 上运行 Assignment 1 实验，记录各模型验证集/测试集准确率对比；
+- 下周计划：继续完成 Stanford CS231n 后续课程学习。
 
-这部分要如实记录：第四周的 Assignment 1 已经完成核心 Python 代码实现，但还不是“完整提交版作业”。完整提交版还需要继续跑 notebook，补充训练曲线、准确率结果和文字回答。
+这部分要如实记录：第四周的 Assignment 1 已经完成三个基础代码作业，但还不是“完整提交版作业”。完整提交版还需要下周继续跑 CIFAR-10 notebook，补充训练曲线、验证集/测试集准确率结果和文字回答。
 
 ## 四、CS229 第 18 讲之后学习内容
 
@@ -289,14 +288,14 @@ CS231n 和 CS229 放在一起学习的好处是，它们从不同角度训练同
 
 ## 六、后续计划
 
-下一步计划按 Assignment 1 的顺序推进，不跳过基础实验：
+下一步计划按 Assignment 1 的顺序继续推进，不跳过基础实验：
 
-1. 先补完 `k_nearest_neighbor.py` 中 three distance functions 和 `predict_labels`；
-2. 在 `knn.ipynb` 中跑通 CIFAR-10 子集，完成不同 `k` 的交叉验证；
-3. 补完 `softmax.py` 的 naive 和 vectorized loss/gradient；
-4. 对 Softmax gradient 做一次手写推导，确认代码和公式一致；
-5. 继续实现 `two_layer_net.ipynb` 和 `fc_net.py` 中的 forward/backward；
-6. 在完成 CS231n Assignment 1 的同时，给 CS229 强化学习部分补一个小型 Q-learning 或 policy iteration 代码实验。
+1. 下载并准备 CIFAR-10 数据集；
+2. 在 `knn.ipynb` 中运行 kNN 实验，记录不同 `k` 下的验证集准确率；
+3. 在 `softmax.ipynb` 中运行 Softmax 实验，记录训练集、验证集和测试集准确率；
+4. 对比 kNN、Softmax、linear classifier 在 CIFAR-10 上的表现差异；
+5. 继续完成 Stanford CS231n 后续课程内容；
+6. 继续推进 Assignment 1 后面的 two-layer net、features 和 FullyConnectedNets 实验。
 
 本周报告补充后的目标是：不仅记录“看了哪些课”，也记录“这些课和 Assignment 1 的代码任务如何对应”，并且如实保留当前实验进度，方便后续接着完成。
 
@@ -309,7 +308,7 @@ CS231n 和 CS229 放在一起学习的好处是，它们从不同角度训练同
 本周任务整体做了三件事：
 
 1. 学习课程内容：CS231n 前五讲，包括图像分类、kNN、线性分类器、优化、反向传播和两层神经网络；同时学习 CS229 第 18 讲之后的 Q-learning、value function approximation、policy search、REINFORCE 和 POMDPs。
-2. 完成代码实现：在 CS231n Assignment 1 starter 的基础上，补全 `cs231n/` 目录下的核心 Python 文件，让 kNN、Softmax、两层网络、多层全连接网络、常用 layer 和 optimizer 能运行。
+2. 完成代码实现：在 CS231n Assignment 1 starter 的基础上，先补全 `k_nearest_neighbor.py`、`softmax.py`、`linear_classifier.py` 三个基础代码作业。
 3. 整理汇报材料：更新 README、周报和 PPT，把“学习了什么、实现了什么、验证了什么、下一步还要做什么”串起来。
 
 ### 2. 它是不是独立小任务
@@ -317,10 +316,10 @@ CS231n 和 CS229 放在一起学习的好处是，它们从不同角度训练同
 它可以看成第四周的独立小任务，任务名称可以叫：
 
 ```text
-Task06：CS231n Assignment 1 图像分类核心实现与 CS229 强化学习补完
+Task06：CS231n Assignment 1 基础分类器实现与 CS229 强化学习补完
 ```
 
-独立性体现在：它有单独目录 `week4task/task06_cs231n_assignment1_image_classification/`，有独立的官方 starter code，有明确的代码实现文件，也有单独的周报和 PPT。和前三周的关系是学习主线连续，但本周交付物是新的。
+独立性体现在：它有单独目录 `week4task/task06_cs231n_assignment1_image_classification/`，有独立的官方 starter code，有明确的三个代码实现文件，也有单独的周报和 PPT。和前三周的关系是学习主线连续，但本周交付物是新的。
 
 ### 3. 分别完成了什么
 
@@ -337,27 +336,22 @@ Task06：CS231n Assignment 1 图像分类核心实现与 CS229 强化学习补�
 
 - `k_nearest_neighbor.py`：实现 two-loop、one-loop、no-loop 三种 L2 距离计算，实现最近邻投票预测；
 - `softmax.py`：实现 naive 和 vectorized Softmax loss / gradient；
-- `linear_classifier.py`：实现 minibatch 采样、SGD 更新、预测函数，并补充 SVM vectorized loss；
-- `layers.py`：实现 affine、ReLU、batchnorm、layernorm、dropout、卷积、池化、spatial batchnorm、spatial groupnorm、SVM loss、Softmax loss；
-- `fc_net.py`：实现 TwoLayerNet 和 FullyConnectedNet 的初始化、前向传播、loss 计算和反向传播；
-- `optim.py`：实现 SGD momentum、RMSProp、Adam。
+- `linear_classifier.py`：实现 minibatch 采样、SGD 更新、预测函数，并补充 SVM vectorized loss。
 
 验证部分完成：
 
 - 编写 `outputs/week4_assignment1_tests/verify_assignment1_core.py` 做小规模功能验证；
 - 验证 kNN 距离和标签预测；
 - 验证 Softmax naive/vectorized 结果一致；
-- 验证 affine、ReLU、Softmax 层接口；
-- 验证 TwoLayerNet 和 FullyConnectedNet 的 forward/backward 与数值梯度基本一致；
-- 验证 batchnorm、layernorm、dropout、卷积、池化、spatial normalization 和 optimizer 可以正常运行；
-- 使用 `compileall` 检查 `cs231n/` Python 文件可以正常编译。
+- 验证 linear classifier 可以完成 minibatch 训练和预测；
+- 使用 `compileall` 检查相关 Python 文件可以正常编译。
 
 ### 4. 还没有完成什么
 
-需要在组会上如实说明：本周已经完成 Assignment 1 的核心 Python 代码，但还没有完成完整 notebook 级别的最终提交。后续还需要：
+需要在组会上如实说明：本周已经完成 Assignment 1 的三个基础代码作业，但还没有完成完整 notebook 级别的最终提交。下周还需要：
 
 - 下载或准备 CIFAR-10 数据；
-- 按 `knn.ipynb`、`softmax.ipynb`、`two_layer_net.ipynb`、`features.ipynb`、`FullyConnectedNets.ipynb` 顺序完整运行；
-- 做超参数搜索并记录 train/val/test accuracy；
+- 先按 `knn.ipynb`、`softmax.ipynb` 顺序运行基础分类实验；
+- 记录各模型验证集/测试集准确率对比；
 - 补齐 notebook 中的 inline question；
-- 把最终训练曲线、准确率和可视化结果整理进报告或 PPT。
+- 继续完成 Stanford CS231n 后续课程，并推进 two-layer net、features、FullyConnectedNets 实验。
