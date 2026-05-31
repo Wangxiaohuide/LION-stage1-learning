@@ -2,10 +2,7 @@
 
 ## 一、本周学习概况
 
-本周主要完成两部分内容：
-
-1. 参考 `cs231n/cs231n.github.io` 官方仓库，学习 CS231n 前五讲/Module 1，并整理 Assignment 1 的图像分类主线；
-2. 补完 CS229 第 18 讲之后的强化学习内容，包括 Q-learning、价值函数近似、Policy Search、REINFORCE、POMDPs 和课程总结。
+本周的学习主线分成两条：一条是 CS231n 前五讲对应的图像分类基础，另一条是 CS229 第 18 讲之后的强化学习内容。和前三周相比，这一周的重点更偏“把课程概念落到一个真实作业框架里”：CS231n Assignment 1 不是单独的一道小题，而是把图像分类从数据处理、kNN、线性分类器、Softmax、两层神经网络一直串到图像特征和全连接网络。
 
 本周新增任务目录为：
 
@@ -13,39 +10,84 @@
 week4task/task06_cs231n_assignment1_image_classification/
 ```
 
-## 二、CS231n 前五讲理解
+其中官方 Assignment 1 starter 位于：
 
-### 1. Image Classification
+```text
+week4task/task06_cs231n_assignment1_image_classification/official_assignment1_starter/
+```
 
-CS231n 从图像分类开始，把计算机视觉问题转化为一个数据驱动的学习流程：输入是一张图片，输出是固定类别集合中的一个标签。与手写规则不同，数据驱动方法通过训练集学习模型参数，再在验证集和测试集上评估泛化能力。
+本周完成的工作主要包括：
 
-这一讲中最重要的思想是 train/validation/test split。训练集用于拟合参数，验证集用于选择超参数，测试集只用于最终评估。kNN 虽然实际效率不高，但它非常适合作为第一种分类器：训练阶段只是记住数据，预测阶段再根据距离寻找最近样本。
+1. 参考 `cs231n/cs231n.github.io` 官方课程与作业材料，整理 CS231n 前五讲的知识结构；
+2. 下载并归档 CS231n Assignment 1 starter，梳理 notebook 和 `cs231n/` 代码框架中的 TODO；
+3. 对 Assignment 1 的 kNN、Softmax、two-layer net、features、FullyConnectedNets 五个实验模块建立任务理解；
+4. 补充学习 CS229 第 18 讲之后的 Q-learning、value function approximation、policy search、REINFORCE、POMDPs 和课程总结；
+5. 对比 CS231n 图像分类任务和 CS229 强化学习任务的差别：前者偏“给定数据集上的监督分类”，后者偏“和环境交互下的长期决策”。
 
-### 2. Linear Classification
+需要说明的是：本周 Assignment 1 主要完成的是官方 starter 的归档、阅读、结构拆解和初步运行检查，并没有把所有 TODO 都补完。因此报告中会把“已完成整理”和“后续需要实现”的部分分开写清楚。
 
-线性分类器把图像拉平成向量后，用
+## 二、CS231n 前五讲学习内容
+
+### 1. Image Classification：从规则系统到数据驱动
+
+CS231n 第一部分从图像分类开始。图像分类看起来是一个简单问题：输入一张图片，输出它属于哪个类别。但真正困难的是，图片中的物体会受到视角、光照、遮挡、背景、形变等因素影响，很难靠手写规则解决。
+
+这部分让我重新理解了“数据驱动方法”的意义。传统规则系统试图人工写出识别规则，而机器学习方法是先准备训练数据，再让模型从数据中学习分类规律。图像分类 pipeline 可以概括为：
+
+```text
+收集数据 -> 划分 train/val/test -> 选择模型 -> 训练参数 -> 验证集调参 -> 测试集评估
+```
+
+其中 train/validation/test split 是我觉得最重要的一点。训练集用于学习参数，验证集用于选择超参数，测试集只用于最终评估。如果把测试集提前用于调参，就会把模型“调”到测试集上，最后得到的准确率不再能代表真实泛化能力。
+
+kNN 是这一讲中最直观的分类器。它的训练阶段几乎没有计算，只是把训练样本保存下来；预测阶段再计算测试图片和训练图片之间的距离，并根据最近的样本投票。它的优点是容易理解，缺点也很明显：预测阶段计算量大，对距离度量敏感，并且没有真正学到抽象特征。
+
+我的理解是，kNN 在 CS231n 中更像一个“起点实验”：它让我们看到图像分类可以被转化为距离比较，但也暴露出直接在像素空间做比较的局限。两张语义相同的图片，只要位置、背景或亮度稍微变化，像素距离就可能很大。
+
+### 2. Linear Classification：把图像分类写成参数化模型
+
+线性分类器把图像拉平成一个向量，然后通过参数矩阵和偏置为每个类别打分：
 
 ```text
 scores = W x + b
 ```
 
-为每个类别打分。SVM 和 Softmax 的差别不在模型形式，而在损失函数。SVM 强调正确类别分数要比错误类别高出 margin；Softmax 把分数转成概率分布，并用交叉熵惩罚错误预测。
+这部分对我很重要，因为它把“分类器”从 kNN 的记忆式方法推进到了参数化模型。模型不再保存所有训练样本，而是学习一组参数 `W` 和 `b`。这些参数可以看成每个类别的模板：当输入图像和某个类别模板更匹配时，该类别得分更高。
 
-这部分让我更清楚地看到，模型结构、损失函数、正则化三者是分开的：同样的线性打分函数，可以配不同的损失；同样的损失，也可以加不同强度的 L2 regularization。
+SVM 和 Softmax 的区别主要在损失函数：
 
-### 3. Optimization
+- SVM loss 强调正确类别分数要比错误类别至少高出一个 margin；
+- Softmax loss 把分数转成概率分布，再用交叉熵惩罚错误分类。
 
-优化部分回答了“如何找到好的参数”。损失函数给出了评价标准，但真正训练模型需要计算梯度并更新参数。数值梯度适合理解和检查，解析梯度适合真正训练。
+我自己的理解是，SVM 更像是在问“正确类别有没有比其他类别明显更好”，Softmax 更像是在问“模型给正确类别分配了多大的概率”。这两种损失函数都使用同一个线性打分模型，但优化目标不同，因此梯度形式也不同。
 
-SGD 的核心是用小批量数据估计整体梯度，从而在计算成本和更新频率之间取得平衡。学习率是最敏感的超参数之一：太大容易震荡，太小训练很慢。
+这一讲也让我更清楚地区分了三个概念：
 
-### 4. Backpropagation
+1. 模型结构：例如 `scores = W x + b`；
+2. 损失函数：例如 SVM loss 或 Softmax cross-entropy；
+3. 正则化：例如 L2 regularization，用来抑制参数过大、减轻过拟合。
 
-反向传播本质上是链式法则在计算图上的系统应用。每个局部节点只需要知道自己的输入、输出和上游梯度，就能把梯度继续传回前面的参数。
+之前容易把这些东西混在一起看，现在更能理解：同一个模型结构可以配不同损失，同一个损失也可以加不同正则化强度。
 
-这部分和 CS229 的梯度推导形成呼应：CS229 更偏公式推导，CS231n 更强调把复杂表达式拆成计算图，再按模块实现 forward/backward。
+### 3. Optimization：从损失函数走向参数更新
 
-### 5. Neural Networks Part 1
+优化部分解决的问题是：有了损失函数以后，如何找到能让损失变小的参数。
+
+课程中先讲数值梯度，再讲解析梯度。数值梯度通过微小扰动参数来观察 loss 的变化，适合理解和检查；解析梯度通过公式推导或反向传播直接计算，适合真正训练模型。Assignment 1 中很多实验都要求同时比较 naive 实现和 vectorized 实现，本质上也是在训练我理解“正确性”和“效率”的区别。
+
+SGD 的思想是每次只用一小批样本估计梯度，而不是每次都遍历完整训练集。这样虽然每一步方向有噪声，但更新更频繁、计算成本更低。学习率是这里最敏感的超参数：学习率太大可能导致 loss 震荡甚至发散；学习率太小又会让训练非常慢。
+
+我对这一讲的思考是：优化不是一个“公式代入”过程，而是一个工程问题。即使模型和损失函数都写对了，如果学习率、正则化强度、batch size 或初始化不合适，训练结果仍然会很差。这也是为什么 Assignment 1 里会安排交叉验证和超参数搜索。
+
+### 4. Backpropagation：把复杂梯度拆成局部计算
+
+反向传播是 CS231n 前几讲中最关键的内容之一。它的本质是链式法则在计算图上的系统应用。一个复杂函数可以拆成很多局部节点，每个节点只需要知道自己的输入、输出和上游梯度，就能计算下游变量对自己输入的梯度。
+
+这部分和 CS229 里偏数学推导的梯度计算形成了互补。CS229 更强调从公式上推导目标函数的梯度；CS231n 更强调把神经网络写成一层层 forward/backward 模块。对于写代码来说，CS231n 的方式更接近真实工程实现。
+
+我目前的理解是：反向传播并不是神经网络特有的“神秘算法”，而是把链式法则组织成一种高效的计算方式。真正需要训练的是把每个模块的 forward 输出保存好，然后 backward 时按相反顺序传回梯度。
+
+### 5. Neural Networks Part 1：两层网络与非线性表达能力
 
 两层神经网络可以写成：
 
@@ -53,61 +95,201 @@ SGD 的核心是用小批量数据估计整体梯度，从而在计算成本和�
 scores = W2 ReLU(W1 x + b1) + b2
 ```
 
-如果没有 ReLU 等非线性，多层线性变换仍然等价于一个线性分类器。非线性激活函数是神经网络获得更强表达能力的关键。
+如果没有 ReLU 这样的非线性激活函数，多层线性变换仍然等价于一个线性分类器。因此神经网络的表达能力并不是来自“层数本身”，而是来自线性变换和非线性激活的组合。
 
-## 三、CS231n Assignment 1 整理
+这部分让我理解到，神经网络可以看成一种自动学习特征的方式。线性分类器直接在原始像素上分类，而两层网络先通过隐藏层把输入变换到新的表示空间，再进行分类。隐藏层学习到的表示如果更适合区分类别，最终分类效果就会更好。
 
-官方 Assignment 1 starter 已经放在：
+Assignment 1 中的 `two_layer_net.ipynb` 正好对应这部分内容：需要手动实现 forward pass、loss、backward pass 和参数更新。这个实验比 kNN 和 Softmax 更综合，因为它同时涉及矩阵维度、ReLU、Softmax loss、L2 正则化和反向传播。
+
+## 三、CS231n Assignment 1 实验内容整理
+
+### 1. 官方 starter 结构
+
+本周归档的官方 starter 包含以下主要 notebook：
+
+| 文件 | 实验主题 | 需要完成的核心内容 |
+|---|---|---|
+| `knn.ipynb` | k-Nearest Neighbor classifier | 距离计算、标签投票、交叉验证选择 `k` |
+| `softmax.ipynb` | Softmax classifier | naive/vectorized loss 和 gradient |
+| `two_layer_net.ipynb` | Two-layer neural network | 初始化、前向传播、反向传播、训练和预测 |
+| `features.ipynb` | Image features | HOG、color histogram 特征与分类器训练 |
+| `FullyConnectedNets.ipynb` | Fully connected networks | 多层全连接网络、优化器、正则化等 |
+
+对应的核心代码目录为：
 
 ```text
-week4task/task06_cs231n_assignment1_image_classification/official_assignment1_starter/
+official_assignment1_starter/cs231n/
 ```
 
-本次作业的目标包括：
+其中和本周阅读最相关的文件包括：
 
-- 理解图像分类 pipeline；
-- 实现 kNN；
-- 实现 Softmax classifier；
-- 实现 two-layer neural network；
-- 使用 HOG、color histogram 等高层图像特征；
-- 训练 fully connected network。
+```text
+cs231n/classifiers/k_nearest_neighbor.py
+cs231n/classifiers/softmax.py
+cs231n/classifiers/fc_net.py
+cs231n/layers.py
+cs231n/solver.py
+cs231n/optim.py
+```
 
-当前仓库保留官方 starter code 和 notebook，用于后续逐题补全 Assignment 1。第四周不包含额外自写脚本，避免和官方作业材料混在一起。
+### 2. kNN 实验理解
 
-## 四、CS229 第 18 讲之后内容
+kNN 实验要求实现三种距离计算方式：
 
-### Lecture 18: Q-Learning and Value Function Approximation
+1. two loops：两层循环，逐个测试样本和训练样本计算距离；
+2. one loop：只循环测试样本，对所有训练样本做向量化计算；
+3. no loops：完全用矩阵运算和广播计算距离矩阵。
 
-Q-learning 解决的是不知道环境转移概率时如何学习最优动作价值函数的问题。它通过与环境交互，不断更新：
+这三个版本的结果应该一致，但运行速度不同。这个实验的意义不只是实现 kNN，更重要的是训练 NumPy 向量化思维。尤其是 no-loop 版本，需要把欧式距离写成：
+
+```text
+||x - y||^2 = ||x||^2 + ||y||^2 - 2 x y
+```
+
+这样就能通过矩阵乘法一次性得到所有测试样本和训练样本之间的距离。
+
+我自己的思考是：这部分是从“数学公式”到“高效代码”的典型转换。公式本身不难，但要写成不显式循环的矩阵代码，需要非常清楚每个数组的 shape。CS231n 的作业很强调这一点，因为后面神经网络的 forward/backward 也都是 shape 驱动的。
+
+### 3. Softmax 实验理解
+
+Softmax 实验要求实现 naive 和 vectorized 两个版本。naive 版本用循环逐个样本计算 loss 和 gradient；vectorized 版本则一次性计算整个 batch 的分数、概率、loss 和梯度。
+
+Softmax 的核心步骤是：
+
+```text
+scores = X W
+scores -= max(scores)
+probabilities = exp(scores) / sum(exp(scores))
+loss = -log(probability of correct class)
+```
+
+减去 `max(scores)` 是为了数值稳定，避免指数运算溢出。这个细节让我意识到，机器学习代码不是只要公式对就行，还要考虑浮点数计算的稳定性。
+
+Softmax 梯度部分是我后续需要重点补的内容。它看起来比 SVM loss 更“概率化”，但实现时可以理解为：先得到预测概率矩阵，再把正确类别位置减 1，最后乘上输入矩阵得到 `dW`。这个推导需要再手写一遍，才能真正写稳。
+
+### 4. Two-layer network 实验理解
+
+两层网络实验把前面几部分串起来。它不再只是一个线性分类器，而是：
+
+```text
+input -> affine -> ReLU -> affine -> Softmax
+```
+
+需要实现的内容包括：
+
+- 参数初始化：`W1, b1, W2, b2`；
+- 前向传播：计算 hidden layer 和 scores；
+- 损失函数：Softmax loss 加 L2 regularization；
+- 反向传播：计算每个参数的梯度；
+- 训练循环：使用 SGD 更新参数；
+- 预测函数：根据 scores 选择类别。
+
+我觉得这个实验的价值在于，它强迫我把“反向传播”写成具体数组操作。只看公式时容易觉得理解了，但真正写代码时会遇到很多细节，例如 ReLU backward 要根据 hidden layer 是否大于 0 来挡住梯度，正则化项的梯度要加到对应的 `dW` 上，bias 的梯度要按 batch 维度求和。
+
+### 5. Features 与 FullyConnectedNets 实验理解
+
+`features.ipynb` 把重点从原始像素转向手工特征。HOG 特征关注局部梯度方向，color histogram 关注颜色分布。这个实验让我看到，在深度学习完全端到端之前，特征工程仍然是视觉任务中非常重要的一环。
+
+`FullyConnectedNets.ipynb` 则把两层网络推广到任意层数的全连接网络，并引入更完整的训练框架。它和 `fc_net.py`、`layers.py`、`solver.py`、`optim.py` 联系紧密，后续需要补全 affine、ReLU、Softmax、优化器等模块。
+
+这部分我目前还只是完成了结构阅读，真正实现还没有开始。后续如果要完整完成 Assignment 1，需要按 notebook 顺序逐个补 TODO，而不是跳着写。
+
+### 6. 当前实验状态
+
+本周当前状态可以概括为：
+
+- 已完成：官方 starter code 和 notebook 的归档；
+- 已完成：Assignment 1 的实验结构、核心文件和 TODO 范围梳理；
+- 已完成：kNN、Softmax、two-layer net、features、FullyConnectedNets 的任务目标理解；
+- 未完成：kNN 距离计算、Softmax 梯度、two-layer net forward/backward、features 实验和 fully connected network 的完整代码实现；
+- 后续重点：先补 kNN 和 Softmax，再进入两层网络和多层全连接网络。
+
+这部分要如实记录：第四周的 Assignment 1 还不是“全部实验完成”，而是完成了实验材料整理、代码阅读和实现路线规划。
+
+## 四、CS229 第 18 讲之后学习内容
+
+### 1. Q-learning
+
+CS229 第 18 讲之后继续强化学习。Q-learning 解决的是不知道环境转移概率时，如何通过交互学习动作价值函数的问题。它的更新公式为：
 
 ```text
 Q(s, a) <- Q(s, a) + alpha [r + gamma max_a' Q(s', a') - Q(s, a)]
 ```
 
-这可以理解为用当前估计和一步后看到的回报之间的 TD error 来修正 Q 值。Value function approximation 则进一步解决状态空间太大时无法保存完整表格的问题，用参数化函数近似价值函数。
+这里括号中的部分是 TD error，表示当前估计和“实际看到的一步奖励加未来最优价值”之间的差距。Q-learning 的特点是 off-policy：它学习的是最优策略对应的价值，即使采样行为本身可能带有探索。
 
-### Lecture 19: Policy Search, REINFORCE, POMDPs
+我的理解是，Q-learning 和前面监督学习最大的差别在于没有固定标签。监督学习中每个样本通常有一个标准答案，而 Q-learning 的“答案”来自环境反馈和未来价值估计，是边探索边修正的。
 
-Policy Search 不再先学价值函数，而是直接优化策略参数。REINFORCE 使用采样轨迹估计策略梯度，让高回报动作在未来更可能被选择。
+### 2. Value Function Approximation
 
-POMDP 则处理状态不能被完全观测的情况。智能体看到的是 observation，而不是真实 state，因此需要在不确定性下维护 belief 或借助历史信息做决策。
+表格型 Q-learning 只适合状态和动作空间比较小的情况。如果状态空间很大，无法为每个 `(s, a)` 都保存一个表格值，就需要用函数近似：
 
-### Lecture 20: Optional Topics and Wrap-up
+```text
+Q(s, a) ≈ f_theta(s, a)
+```
 
-最后一讲更像课程总结，把监督学习、无监督学习、强化学习和应用专题串起来。对我来说，CS229 后半段的主线是：从已知模型的 Bellman equation，到未知模型下的 Q-learning，再到直接优化策略的 policy gradient。
+这和神经网络有很强的联系。CS231n 中神经网络学习的是从图像到类别分数的函数；强化学习中的 value function approximation 学习的是从状态动作到长期回报的函数。两者都在做函数拟合，但监督信号的来源不同。
 
-## 五、本周收获
+我觉得这正好把 CS231n 和 CS229 联系起来：图像分类里网络输出 class score，强化学习里网络可以输出 value 或 Q-value。前者优化分类损失，后者优化 Bellman error 或策略目标。
 
-本周最大的收获是把“图像分类”和“序列决策”两条线放在一起理解。
+### 3. Policy Search 与 REINFORCE
 
-CS231n 前五讲让我看到，从原始像素到分类结果，中间需要经历数据划分、特征表示、损失函数、梯度优化和反向传播。Assignment 1 则把这些概念变成了非常具体的代码任务。
+Policy Search 不再先学习价值函数，而是直接优化策略：
 
-CS229 第 18 讲之后让我继续理解强化学习：当没有固定标签、只有环境反馈时，模型要学的不再是一次预测，而是长期回报最大的行动策略。Q-learning 和 Policy Search 分别代表了基于价值函数和直接优化策略的两种路线。
+```text
+pi_theta(a | s)
+```
 
-## 六、后续需要加强
+REINFORCE 用采样轨迹估计策略梯度。直观理解是：如果某条轨迹获得了高回报，那么这条轨迹中出现过的动作在相应状态下应该更容易被选择；如果回报低，则应该降低这些动作的概率。
 
-1. 回到 CS231n 官方 notebook，逐个补全 Assignment 1 的 TODO；
-2. 对 Softmax 梯度和两层网络反向传播再做一次手推；
-3. 使用 CIFAR-10 数据完成官方 kNN、Softmax、two-layer net、features 和 fully connected network notebook；
-4. 对比 tabular Q-learning、value function approximation 和 policy gradient 的适用场景；
-5. 继续保持每周 README、报告、代码和运行记录同步更新到 GitHub。
+这部分让我意识到，强化学习可以有两条路线：
+
+1. value-based：先学价值函数，再根据价值选动作；
+2. policy-based：直接学策略，让策略本身朝高回报方向更新。
+
+Q-learning 属于第一类，REINFORCE 属于第二类。它们的共同点是都要处理延迟奖励和探索问题，区别在于优化对象不同。
+
+### 4. POMDPs
+
+POMDP 处理的是状态不能被完全观测的情况。MDP 假设智能体能看到完整状态，但现实中很多任务只能看到 observation。例如自动驾驶不一定能知道所有车辆的真实意图，机器人也可能只能通过传感器获得部分信息。
+
+POMDP 中需要根据历史观测维护 belief state。我的理解是，这让强化学习从“当前状态决策”变成了“在不完整信息下根据历史推断当前情况再决策”。这比标准 MDP 更接近真实世界，也更难。
+
+### 5. 课程总结
+
+CS229 后半段把机器学习从监督学习扩展到无监督学习、强化学习和控制。对我来说，这一段最重要的收获是理解不同任务的监督信号来自哪里：
+
+- 监督学习：标签提供直接目标；
+- 无监督学习：数据结构本身提供学习信号；
+- 强化学习：环境奖励提供延迟反馈；
+- 控制问题：系统动态和代价函数共同定义优化目标。
+
+这让我重新看 CS231n 的图像分类：它是监督学习中非常典型、也非常工程化的一类问题。而 CS229 后半段则提醒我，机器学习不只是分类和回归，还包括在环境中连续做决策。
+
+## 五、本周自己的思考
+
+本周最大的思考是：课程内容和编程作业之间不能只停留在“看懂概念”，必须能对应到代码位置。
+
+例如，CS231n 讲 kNN 时，概念上只是“找最近邻投票”，但 Assignment 1 中真正要写的是三种距离计算、标签排序、投票和交叉验证。CS231n 讲 Softmax 时，公式上只是概率和交叉熵，但代码中要考虑数值稳定、正则化、矩阵维度和梯度向量化。CS231n 讲反向传播时，理论上是链式法则，但在 `fc_net.py` 和 `layers.py` 里就变成了每一层 forward cache 和 backward gradient 的组织问题。
+
+我也发现自己目前的薄弱点比较清楚：
+
+1. 对 NumPy shape 的敏感度还不够，尤其是广播和矩阵乘法；
+2. Softmax gradient 虽然知道大方向，但还需要手推和代码实现结合；
+3. 神经网络 backward pass 不能只背公式，要能按模块拆开；
+4. 强化学习部分理解了概念，但还缺少代码实验来巩固。
+
+CS231n 和 CS229 放在一起学习的好处是，它们从不同角度训练同一个能力：把数学目标翻译成可运行代码。CS231n 更偏视觉和神经网络工程，CS229 更偏机器学习理论框架。两者结合起来，能帮助我既不只会调包，也不只停留在公式。
+
+## 六、后续计划
+
+下一步计划按 Assignment 1 的顺序推进，不跳过基础实验：
+
+1. 先补完 `k_nearest_neighbor.py` 中 three distance functions 和 `predict_labels`；
+2. 在 `knn.ipynb` 中跑通 CIFAR-10 子集，完成不同 `k` 的交叉验证；
+3. 补完 `softmax.py` 的 naive 和 vectorized loss/gradient；
+4. 对 Softmax gradient 做一次手写推导，确认代码和公式一致；
+5. 继续实现 `two_layer_net.ipynb` 和 `fc_net.py` 中的 forward/backward；
+6. 在完成 CS231n Assignment 1 的同时，给 CS229 强化学习部分补一个小型 Q-learning 或 policy iteration 代码实验。
+
+本周报告补充后的目标是：不仅记录“看了哪些课”，也记录“这些课和 Assignment 1 的代码任务如何对应”，并且如实保留当前实验进度，方便后续接着完成。
