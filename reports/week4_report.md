@@ -9,12 +9,9 @@
 本周完成的工作主要包括：
 
 1. 参考 `cs231n/cs231n.github.io` 官方课程与作业材料，整理 CS231n 前五讲的知识结构；
-2. 下载并归档 CS231n Assignment 1 starter，梳理 notebook 和 `cs231n/` 代码框架中的 TODO；
-3. 对 Assignment 1 的 kNN、Softmax、linear classifier 三个基础代码作业进行实现，并阅读 two-layer net、features、FullyConnectedNets 的后续实验结构；
-4. 补充学习 CS229 第 18 讲之后的 Q-learning、value function approximation、policy search、REINFORCE、POMDPs 和课程总结；
-5. 对比 CS231n 图像分类任务和 CS229 强化学习任务的差别：前者偏“给定数据集上的监督分类”，后者偏“和环境交互下的长期决策”。
+2. 对 Assignment 1 的 kNN、Softmax、linear classifier 三个基础代码作业进行实现
+3. 补充学习 CS229 第 18 讲之后的 Q-learning、value function approximation、policy search、REINFORCE、POMDPs 和课程总结；
 
-需要说明的是：本周 Assignment 1 分两步推进。前半段先完成官方 starter 的归档、阅读、结构拆解和初步运行检查；随后重点完成三个基础代码作业：`k_nearest_neighbor.py`、`softmax.py`、`linear_classifier.py`。Notebook 中的 CIFAR-10 完整运行、模型准确率对比、训练曲线和 inline question 计划放到下周继续完善。
 
 ## 二、CS231n 前五讲学习内容
 
