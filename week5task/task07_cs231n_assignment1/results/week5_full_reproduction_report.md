@@ -93,14 +93,71 @@ kNN 依赖原始像素 L2 距离，但图像语义与像素距离并不稳定：
 
 ## 7. 当前实验局限
 
-- 仍然使用 raw pixels，没有使用 HOG / color histogram 等特征。
+- raw pixels 基线已经完成，并已补充 HOG + color histogram 特征实验。
 - TwoLayerNet 只做了代表性配置搜索，还不是极致调参。
 - 测试集只取 1000 张用于快速复现，完整 CIFAR-10 测试集为 10000 张。
 - 没有训练 CNN，因此还没有利用图像局部空间结构。
 
 ## 8. 下一步计划
 
-1. 跑 `features.ipynb`：加入 HOG 和颜色直方图特征。
+1. `features.ipynb` 对应实验已补跑：HOG + color histogram 明显提升 Softmax 和 TwoLayerNet。
 2. 跑 `FullyConnectedNets.ipynb`：比较多层网络、Dropout、Batch Normalization。
 3. 增加 TwoLayerNet epoch 和更细网格搜索。
 4. 后续进入 CNN，在 CIFAR-10 上进一步提升准确率。
+
+## 9. 补充实验：Higher Level Representations - Image Features
+
+Assignment 1 后半部分要求比较 raw pixels 与更高级的手工图像特征。本次已补跑 `features.ipynb` 对应实验：对 CIFAR-10 图像提取 HOG 特征和 HSV color histogram，再在这些特征上训练 Softmax 与 TwoLayerNet。
+
+本次特征设置如下：
+
+- HOG：刻画局部边缘和梯度方向，更接近物体轮廓信息；
+- HSV color histogram：刻画图像颜色分布，补充原始像素和边缘特征；
+- 特征维度：154；
+- 数据规模：49,000 train / 1,000 validation / 1,000 test；
+- 特征提取耗时：160.2s，总实验耗时：372.9s。
+
+### 9.1 Raw pixels 与 image features 对比
+
+| 模型 | Raw pixels Test Acc | HOG + Color Hist Test Acc | 提升 |
+|---|---:|---:|---:|
+| Softmax | 0.359 | 0.420 | +0.061 |
+| TwoLayerNet | 0.493 | 0.576 | +0.083 |
+
+![Raw pixels 与 image features 对比](figures/feature_vs_raw_accuracy.png)
+
+结果说明：HOG + color histogram 明显优于 raw pixels。Softmax 从 0.359 提升到 0.420，说明即使模型仍然是线性的，只要输入表示更接近图像语义，分类效果也会提升。TwoLayerNet 从 0.493 提升到 0.576，说明“更好的特征表示 + 非线性分类器”可以叠加带来更强效果。
+
+### 9.2 Softmax on features 调参结果
+
+最佳 Softmax 特征版配置：
+
+```text
+learning_rate = 5e-07
+reg = 5000.0
+val_acc = 0.417
+test_acc = 0.420
+```
+
+![Features Softmax heatmap](figures/features_softmax_hyperparam_heatmap.png)
+
+### 9.3 TwoLayerNet on features 调参结果
+
+最佳 TwoLayerNet 特征版配置：
+
+```text
+hidden_dim = 750
+learning_rate = 0.001
+reg = 0.001
+epochs = 8
+val_acc = 0.605
+test_acc = 0.576
+```
+
+![Features TwoLayerNet config comparison](figures/features_twolayer_config_comparison.png)
+
+这个结果已经达到 CS231n Assignment 1 对 image features 部分常见的目标区间：在 HOG + color histogram 上训练两层网络，测试准确率可以超过 0.58 左右。本地快速测试集上，本次 best-by-validation 模型 test accuracy 为 0.576。
+
+### 9.4 本实验带来的学习点
+
+这部分最重要的结论是：模型性能不只取决于分类器，也强烈取决于输入表示。Raw pixels 把图像当成 3072 维数字向量，很多语义结构被打散；HOG 把边缘和方向编码出来，color histogram 把颜色统计编码出来，因此更接近传统视觉里“可分类”的表示。CNN 后续之所以强，是因为它不再手写 HOG，而是通过卷积层自动学习类似甚至更强的局部视觉特征。

@@ -190,7 +190,7 @@ week5task/task07_cs231n_assignment1/results/week5_cs231n_assignment1_speaker_not
 
 当前实验仍然有几个局限：
 
-1. 主要使用 raw pixels，没有充分加入 HOG 和 color histogram 等手工特征；
+1. raw pixels 基线和 HOG + color histogram 手工特征实验均已完成；
 2. TwoLayerNet 只做了代表性调参，还没有做非常细的网格搜索；
 3. 测试集使用 1,000 张快速评估，后续可以扩展到完整 10,000 张；
 4. 还没有进入 CNN，因此没有利用图像局部空间结构。
@@ -207,3 +207,20 @@ week5task/task07_cs231n_assignment1/results/week5_cs231n_assignment1_speaker_not
 Week5 通过 CS231n Assignment 1 的本地复现，把图像分类的基础方法系统串联起来。实验结果表明，原始像素空间下 kNN 表现有限，Softmax 能学习线性类别模板但上限不高，而 TwoLayerNet 通过非线性隐藏层显著提升了分类准确率。
 
 这周的重点不是获得最高分，而是理解深度学习图像分类模型是如何从数据、损失函数、梯度优化、正则化和调参一步步搭建起来的。这为后续学习图像特征、FullyConnectedNet 和 CNN 打下了基础。
+
+## 十、补充：Image Features 实验
+
+在前一版 Week5 报告里，我把 HOG / color histogram 写成后续工作。现在这部分已经补跑完成，对应 CS231n Assignment 1 的 `features.ipynb`。
+
+补充实验使用 49,000 张训练图像、1,000 张验证图像和 1,000 张测试图像。先提取 HOG 与 HSV color histogram，再分别训练 Softmax 和 TwoLayerNet。
+
+| 输入表示 | 模型 | 验证准确率 | 测试准确率 |
+|---|---|---:|---:|
+| raw pixels | Softmax | 0.383 | 0.359 |
+| HOG + color histogram | Softmax | 0.417 | 0.420 |
+| raw pixels | TwoLayerNet | 0.515 | 0.493 |
+| HOG + color histogram | TwoLayerNet | 0.605 | 0.576 |
+
+这个结果说明，手工图像特征确实能显著改善分类效果。Softmax 虽然仍是线性模型，但输入换成 HOG + color histogram 后，测试准确率从 0.359 提升到 0.420。TwoLayerNet 进一步把测试准确率提升到 0.576。这说明 A1 的重点不只是“换模型”，也包括“换表示”：更好的图像表示会让简单分类器也变强。
+
+因此，当前 Week5 的结论需要更新为：本周已经完成 raw pixels 基线、HOG + color histogram 特征实验，以及两类输入表示下的 Softmax / TwoLayerNet 对比。剩余未展开的主要是 FullyConnectedNet 的 dropout / batch normalization、更完整的 10,000 张测试集评估，以及后续 CNN。

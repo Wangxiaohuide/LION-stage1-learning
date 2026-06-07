@@ -99,3 +99,19 @@ kNN 从 10k 到 49k 有提升，但提升相对有限，因为瓶颈不是数据
 第一，跑 `features.ipynb`，加入 HOG 和颜色直方图，观察手工特征对 Softmax 的提升。第二，跑 `FullyConnectedNets.ipynb`，比较多层网络、Dropout 和 Batch Normalization。第三，进一步增加 TwoLayerNet 的 epoch 和更细调参。第四，后续进入 CNN，用卷积结构利用图像的局部空间关系。
 
 总结来说，Week5 的任务完成了从传统机器学习分类器到简单神经网络的过渡，为后续学习 CNN 打基础。
+
+## Slide 15：补充实验 - HOG + Color Histogram
+
+这一页要说明，Assignment 1 后半部分不只是用 raw pixels，还要求我们尝试 higher-level representations。我补跑了 HOG 和 HSV color histogram。HOG 主要描述边缘和梯度方向，color histogram 描述颜色分布。它们不是深度学习自动学出来的特征，而是传统计算机视觉里手工设计的图像表示。
+
+这里最关键的对比是：Softmax 在 raw pixels 上测试准确率是 0.359，换成 HOG + color histogram 后提升到 0.420；TwoLayerNet 在 raw pixels 上是 0.493，换成特征后提升到 0.576。这说明输入表示本身非常重要。
+
+## Slide 16：特征版调参结果
+
+这一页展示两个调参图。左边是 Softmax 在特征上的 learning rate 和 regularization 搜索，右边是 TwoLayerNet 不同 hidden_dim、learning_rate 和 regularization 配置的比较。最佳 TwoLayerNet 特征版模型验证准确率达到 0.605，测试准确率达到 0.576。
+
+这里可以强调，我们选择模型仍然依据 validation accuracy，而不是直接挑 test accuracy 最高的配置。这和前面 raw pixels 实验保持一致。
+
+## Slide 17：更新后的结论
+
+补充 features 实验之后，Week5 的结论更完整了。第一，raw pixels 可以跑通完整 pipeline，但表达能力有限。第二，HOG + color histogram 这样的手工特征能显著提升 Softmax 和 TwoLayerNet。第三，后续 CNN 的意义就更清楚了：CNN 不再依赖人手写 HOG，而是通过卷积层自动学习局部边缘、纹理和更高级的视觉模式。
