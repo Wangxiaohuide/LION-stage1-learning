@@ -1,0 +1,112 @@
+{
+  "scale": "N10000",
+  "num_training": 10000,
+  "num_val": 1000,
+  "num_test": 1000,
+  "search": {
+    "lr=5e-08,reg=10000": {
+      "lr": 5e-08,
+      "reg": 10000.0,
+      "train_acc": 0.1975,
+      "val_acc": 0.219
+    },
+    "lr=5e-08,reg=25000": {
+      "lr": 5e-08,
+      "reg": 25000.0,
+      "train_acc": 0.2295,
+      "val_acc": 0.227
+    },
+    "lr=5e-08,reg=50000": {
+      "lr": 5e-08,
+      "reg": 50000.0,
+      "train_acc": 0.2915,
+      "val_acc": 0.271
+    },
+    "lr=5e-08,reg=100000": {
+      "lr": 5e-08,
+      "reg": 100000.0,
+      "train_acc": 0.2895,
+      "val_acc": 0.274
+    },
+    "lr=1e-07,reg=10000": {
+      "lr": 1e-07,
+      "reg": 10000.0,
+      "train_acc": 0.2865,
+      "val_acc": 0.251
+    },
+    "lr=1e-07,reg=25000": {
+      "lr": 1e-07,
+      "reg": 25000.0,
+      "train_acc": 0.329,
+      "val_acc": 0.316
+    },
+    "lr=1e-07,reg=50000": {
+      "lr": 1e-07,
+      "reg": 50000.0,
+      "train_acc": 0.31,
+      "val_acc": 0.293
+    },
+    "lr=1e-07,reg=100000": {
+      "lr": 1e-07,
+      "reg": 100000.0,
+      "train_acc": 0.277,
+      "val_acc": 0.271
+    },
+    "lr=5e-07,reg=10000": {
+      "lr": 5e-07,
+      "reg": 10000.0,
+      "train_acc": 0.371,
+      "val_acc": 0.349
+    },
+    "lr=5e-07,reg=25000": {
+      "lr": 5e-07,
+      "reg": 25000.0,
+      "train_acc": 0.337,
+      "val_acc": 0.324
+    },
+    "lr=5e-07,reg=50000": {
+      "lr": 5e-07,
+      "reg": 50000.0,
+      "train_acc": 0.302,
+      "val_acc": 0.293
+    },
+    "lr=5e-07,reg=100000": {
+      "lr": 5e-07,
+      "reg": 100000.0,
+      "train_acc": 0.2795,
+      "val_acc": 0.267
+    },
+    "lr=1e-06,reg=10000": {
+      "lr": 1e-06,
+      "reg": 10000.0,
+      "train_acc": 0.336,
+      "val_acc": 0.312
+    },
+    "lr=1e-06,reg=25000": {
+      "lr": 1e-06,
+      "reg": 25000.0,
+      "train_acc": 0.315,
+      "val_acc": 0.304
+    },
+    "lr=1e-06,reg=50000": {
+      "lr": 1e-06,
+      "reg": 50000.0,
+      "train_acc": 0.297,
+      "val_acc": 0.29
+    },
+    "lr=1e-06,reg=100000": {
+      "lr": 1e-06,
+      "reg": 100000.0,
+      "train_acc": 0.283,
+      "val_acc": 0.262
+    }
+  },
+  "best": {
+    "learning_rate": 5e-07,
+    "reg": 10000.0,
+    "train_acc": 0.371,
+    "val_acc": 0.349,
+    "test_acc": 0.359
+  },
+  "wall_seconds": 40.28
+}

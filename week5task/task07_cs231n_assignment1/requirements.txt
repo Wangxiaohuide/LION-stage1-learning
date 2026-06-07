@@ -1,0 +1,10 @@
+numpy
+matplotlib
+scipy
+imageio
+six
+future
+jupyter
+notebook
+nbconvert
+ipykernel

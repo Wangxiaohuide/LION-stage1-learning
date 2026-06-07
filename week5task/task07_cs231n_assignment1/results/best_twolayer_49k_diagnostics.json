@@ -1,0 +1,13 @@
+{
+  "config": {
+    "hidden_dim": 100,
+    "learning_rate": 0.00025,
+    "reg": 0.05,
+    "num_epochs": 8,
+    "batch_size": 512
+  },
+  "best_val_acc": 0.517,
+  "test_acc": 0.502,
+  "wall_seconds": 61.12,
+  "loss_history_len": 760
+}

@@ -1,0 +1,1 @@
+{"cfg_id": 5, "hidden_dim": 200, "lr": 0.0005, "reg": 0.25, "epochs": 5, "batch_size": 512, "best_val_acc": 0.493, "last_train_acc": 0.499, "test_acc": 0.51, "wall": 41.57}

@@ -1,0 +1,14 @@
+{
+  "cfg_id": 8,
+  "hidden_dim": 300,
+  "learning_rate": 0.00025,
+  "reg": 0.1,
+  "num_epochs": 5,
+  "batch_size": 512,
+  "best_val_acc": 0.49,
+  "last_train_acc": 0.6,
+  "last_val_acc": 0.49,
+  "test_acc": 0.475,
+  "final_loss": 2.925959,
+  "wall_seconds": 84.0
+}

@@ -1,0 +1,21 @@
+{
+  "scale": "N49000",
+  "num_training": 49000,
+  "ks_tested": [
+    5,
+    10
+  ],
+  "results_by_k": {
+    "5": {
+      "val_acc": 0.326
+    },
+    "10": {
+      "val_acc": 0.316
+    }
+  },
+  "best_k": 5,
+  "best_val_acc": 0.326,
+  "test_acc": 0.348,
+  "wall_seconds": 42.6,
+  "note": "\u53ea\u6d4bk=[5,10]\uff0c49000\u89c4\u6a21\u6bcfk\u7ea612s\uff0c3\u4e2ak\u4f1a\u8d85\u65f6"
+}

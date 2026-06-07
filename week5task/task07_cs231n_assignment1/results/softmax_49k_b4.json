@@ -1,0 +1,37 @@
+{
+  "batch_id": 4,
+  "search": {
+    "lr=7.5e-07,reg=25000": {
+      "lr": 7.5e-07,
+      "reg": 25000.0,
+      "train_acc": 0.326,
+      "val_acc": 0.334
+    },
+    "lr=7.5e-07,reg=50000": {
+      "lr": 7.5e-07,
+      "reg": 50000.0,
+      "train_acc": 0.2955,
+      "val_acc": 0.305
+    },
+    "lr=1e-06,reg=25000": {
+      "lr": 1e-06,
+      "reg": 25000.0,
+      "train_acc": 0.3275,
+      "val_acc": 0.33
+    },
+    "lr=1e-06,reg=50000": {
+      "lr": 1e-06,
+      "reg": 50000.0,
+      "train_acc": 0.312,
+      "val_acc": 0.301
+    }
+  },
+  "batch_best": {
+    "lr": 7.5e-07,
+    "reg": 25000.0,
+    "train_acc": 0.326,
+    "val_acc": 0.334,
+    "test_acc": 0.345
+  },
+  "wall_seconds": 24.11
+}

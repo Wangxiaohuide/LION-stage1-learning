@@ -1,0 +1,27 @@
+{
+  "scale": "N20000",
+  "num_training": 20000,
+  "num_val": 1000,
+  "num_test": 1000,
+  "results_by_k": {
+    "1": {
+      "val_acc": 0.307
+    },
+    "3": {
+      "val_acc": 0.298
+    },
+    "5": {
+      "val_acc": 0.305
+    },
+    "8": {
+      "val_acc": 0.313
+    },
+    "10": {
+      "val_acc": 0.313
+    }
+  },
+  "best_k": 8,
+  "best_val_acc": 0.313,
+  "test_acc": 0.305,
+  "wall_seconds": 32.98
+}

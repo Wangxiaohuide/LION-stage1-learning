@@ -1,0 +1,1 @@
+{"hidden_dim": 100, "learning_rate": 0.001, "reg": 0.5, "num_epochs": 10, "best_val_acc": 0.428, "last_train_acc": 0.41, "test_acc": 0.411, "wall_seconds": 29.49}
