@@ -1,16 +1,17 @@
 # Week5 CS231n Assignment 1 PPT 大纲
 
-1. 标题页：CIFAR-10 图像分类本地复现实验
-2. 任务背景：CS231n Assignment 1 的图像分类 pipeline
-3. 数据集介绍：CIFAR-10 与 10k / 20k / 49k 训练规模
-4. 实验流程：数据、训练、调参、测试与可视化
-5. kNN：最近邻思想、结果与推理成本
-6. Softmax：线性分类器与超参数热力图
-7. TwoLayerNet：非线性隐藏层与配置对比
-8. 模型整体测试准确率对比
-9. 数据规模影响
-10. 训练损失与混淆矩阵诊断
-11. 最佳模型总结
-12. 关键学习收获
+1. 标题页：raw pixels 基线 + image features 补充实验
+2. Assignment 1 范围：Q1-Q5 完成情况
+3. CIFAR-10 数据集与划分
+4. 实验流程
+5. Raw pixels 基线结果
+6. Raw pixels 的局限
+7. Image Features：HOG + Color Histogram
+8. Raw pixels vs Image Features 对比
+9. Softmax on Features 调参
+10. TwoLayerNet on Features 调参
+11. 为什么 features 有用
+12. 本周学习收获
 13. 当前局限
-14. 下一步计划
+14. 下一步：走向 Assignment 2
+15. 汇报结论
